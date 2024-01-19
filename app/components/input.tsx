@@ -23,6 +23,7 @@ const Input = ({type,value,onChange,placeholder}: InputProps) => {
         type={type}
         value={value}
         className={className}
+        required
         onChange={(e) => {onChange && onChange(e.target.value); }}
         placeholder={placeholder}
         />
