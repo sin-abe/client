@@ -1,41 +1,67 @@
 import { PostUser } from "../models/user";
+import Cookies from "js-cookie";
 
-const URL_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
-const REGIST_URL = URL_BASE + "regist/store";
-const AUTH_URL = URL_BASE + "auth";
-const USER_URL = URL_BASE + "user";
+const LARAVEL_API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL;
 
 
 export const RegistUser = async (postUser: PostUser) => {
     try{
-        const response = await fetch(REGIST_URL, {
+        const url = LARAVEL_API_URL + "regist/store";
+        const response = await fetch(url, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(postUser)
         });
 
         if(response.ok){
-            const result = await response.json();
-            console.log(result);
-            return result;
+            return await response.json();
         }
     } catch(error) {
         console.error("Failed to send data", error);
     }
 }
 
-export const AuthUser = async (postUser: PostUser) => {
+interface AuthUserProps {
+    email:string;
+    password:string
+}
+
+export const AuthUser = async ({email, password}: AuthUserProps) => {
     try{
-        const response = await fetch(AUTH_URL, {
+        const url = LARAVEL_API_URL + "auth";
+        const response = await fetch(url, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(postUser)
+            body: JSON.stringify({email,password})
         });
 
         if(response.ok){
-            const result = await response.json();
-            console.log(result);
-            return result;
+            const data = await response.json();
+            Cookies.set("access_token",data.access_token,
+            {expires: 30}
+            )
+            return data;
+        }
+    } catch(error) {
+        console.error("Failed to send data", error);
+    }
+}
+
+export const GetUser = async (accessToken: string) => {
+    try{
+
+        if(!accessToken) return;
+
+        const url = LARAVEL_API_URL + "user";
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {"Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`},
+        });
+
+        if(response.ok){
+            const data = await response.json();
+            return data;
         }
     } catch(error) {
         console.error("Failed to send data", error);

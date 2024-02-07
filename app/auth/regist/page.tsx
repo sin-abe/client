@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RegistUser } from "@/app/services/userService";
+import ClickButton from "@/app/components/clickButton";
 
 
 export interface Error {
@@ -16,9 +17,9 @@ export interface Error {
 
 function RegistPage() {
 
-    const [name,setName] = useState("");
-    const [email,setEmail] = useState("");
-    const [password,setPassword] = useState("");
+    const [name,setName] = useState<string>("");
+    const [email,setEmail] = useState<string>("");
+    const [password,setPassword] = useState<string>("");
     const [error, setError] = useState<Error>({name:"",email:"",password:""});
 
     const router = useRouter();
@@ -31,24 +32,6 @@ function RegistPage() {
             router.push("/");
         }
     }
-
-    // const regist = async () =>{
-    //      const url = "http://localhost:8000/api/regist/store"
-    //      const response = await fetch(url, {
-    //          method: "POST",
-    //          headers: {"Content-Type": "application/json"},
-    //          body: JSON.stringify(name,email,password)
-    //      });
-    //      if(response.ok){
-    //          const result = await response.json();
-    //          console.log(result);
-    //          if(response.access_token) {
-    //              router.push("/"); 
-    //          }
-    //          return result;
-    //      }
-    //　}
-
 
     return (
         <div className="mx-auto w-1/3">
@@ -69,14 +52,11 @@ function RegistPage() {
             </div>
 
             <div>
-                <button className="w-full bg-black hover:bg-gray-800 
-                focus:shadow-outline focus:outline-none text-white 
-                py-2 px-4 my-3 rounded-lg" onClick={() => {regist();}}>Sign up</button>
-
+            <ClickButton label="Sign Up" onClick={regist} disabled={!name || !email || !password}/>
                 <Link href="/auth/login" 
-                className="flex justify-center p-2 my-1 
+                className="flex justify-center py-2 px-4 my-3 
                 text-gray-600 bg-gray-200 hover:bg-gray-300 
-                rounded-lg">Sign in</Link>
+                w-full rounded-lg">Sign in</Link>
             </div>
         </div>
     );

@@ -3,9 +3,17 @@
 import Link from "next/link";
 import { SiLoopback } from "react-icons/si";
 import NavbarLink from "./navbarLink";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
     console.log("Server Component \"navbar\"");
+    
+    const router = useRouter();
+    const signOut = () => {
+        
+    }
+
     return (
         <nav>
             <div className='flex py-3 px-5 border-b'>

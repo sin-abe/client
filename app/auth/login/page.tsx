@@ -1,12 +1,13 @@
 "use client"
 
+import ClickButton from "@/app/components/clickButton";
 import { FaUser } from "react-icons/fa";
 import Input from "@/app/components/input";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { AuthUser } from "@/app/services/userService";
+
 
 
 export interface Error {
@@ -14,35 +15,21 @@ export interface Error {
 }
 
 function LoginPage() {
-    const [name,setName] = useState("");
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [error, setError] = useState<Error>({auth:""});
 
     const router = useRouter();
-    const auth = async () => {
-        var result = await AuthUser({name,email,password});
-        if(result.error){
-            setError(result.error);
-        } else {
-            localStorage.setItem("access_token", result.access_token);
-            router.push("/");
-        }
-    }
 
-    // const auth = async () =>{
-    //      const url = "http://localhost:8000/api/auth"
-    //      const response = await fetch(url, {
-    //          method: "POST",
-    //          headers: {"Content-Type": "application/json"},
-    //          body: JSON.stringify(email,password)
-    //      });
-    //      if(response.ok){
-    //          const result = await response.json();
-    //          console.log(result);
-    //          return result;
-    //      }
-    //　}
+    const auth = async () => {
+        
+        const response = await AuthUser({email,password})
+
+        if (response.access_token) {
+            router.push('/');
+        }
+        
+    }
 
     return (
         <div className="mx-auto w-1/3">
@@ -60,9 +47,7 @@ function LoginPage() {
             </div>
 
             <div>
-                <button className="w-full bg-black hover:bg-gray-800 
-                focus:shadow-outline focus:outline-none text-white 
-                py-2 px-4 my-3 rounded-lg" onClick={() => {auth();}}>Sign in</button>
+                <ClickButton label="Sign in" onClick={auth} disabled={!email || !password}/>
 
                 <Link href="/auth/regist" 
                 className="flex justify-center p-2 my-1 
